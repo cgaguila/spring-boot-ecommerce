@@ -1,19 +1,18 @@
 package com.ecommerce.backend.service;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import com.ecommerce.backend.dto.OrderRequestDTO;
+import com.ecommerce.backend.dto.OrderResponseDTO;
+import com.ecommerce.backend.exception.BadRequestException;
 import com.ecommerce.backend.model.Order;
 import com.ecommerce.backend.model.Product;
 import com.ecommerce.backend.repository.OrderRepository;
 import com.ecommerce.backend.repository.ProductRepository;
-import com.ecommerce.backend.dto.OrderRequestDTO;
-import com.ecommerce.backend.dto.OrderResponseDTO;
-import com.ecommerce.backend.exception.BadRequestException;
-
-import org.springframework.stereotype.Service;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 @Service
 public class OrderService {
@@ -37,9 +36,9 @@ public class OrderService {
 
         List<Product> products = productRepository.findAllById(request.getProductIds());
 
-        if (products.isEmpty()) {
+        if (products == null || products.isEmpty()) {
             logger.error("Invalid products: {}", request.getProductIds());
-            throw new BadRequestException("Invalid products");
+            throw new BadRequestException("Product IDs are required or Invalid products provided");
         }
 
         double total = products.stream()
